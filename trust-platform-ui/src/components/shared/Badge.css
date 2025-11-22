@@ -1,0 +1,49 @@
+.badge {
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-success {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.badge-warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-info {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.badge-default {
+  background: #e0e0e0;
+  color: #666;
+}
+
+/* Dark theme badges */
+.badge.dark-success {
+  background: rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+}
+
+.badge.dark-warning {
+  background: rgba(255, 170, 0, 0.2);
+  color: #ffaa00;
+}
+
+.badge.dark-danger {
+  background: rgba(255, 68, 68, 0.2);
+  color: #ff4444;
+}
+

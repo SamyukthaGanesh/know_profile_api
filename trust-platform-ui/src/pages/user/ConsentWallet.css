@@ -1,0 +1,166 @@
+.consent-wallet-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.consent-description {
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.consent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.consent-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+.consent-item:hover {
+  background: #f0f0f0;
+}
+
+.consent-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.consent-info {
+  flex: 1;
+}
+
+.consent-info strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 16px;
+}
+
+.consent-info p {
+  color: #666;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.usage-info {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #999;
+}
+
+.no-receipts {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.receipts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.receipt-item {
+  padding: 20px;
+  background: #f8f9fa;
+  border: 2px dashed #667eea;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.receipt-item:hover {
+  background: #f0f0f0;
+  border-color: #764ba2;
+}
+
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.receipt-header strong {
+  color: #333;
+  font-size: 14px;
+}
+
+.receipt-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.receipt-hash {
+  color: #667eea;
+  word-break: break-all;
+}
+
+.verified-badge {
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.receipt-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.receipt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.receipt-field label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.receipt-field code,
+.receipt-field span {
+  color: #666;
+  font-size: 13px;
+}
+
+.receipt-field code {
+  background: #f0f0f0;
+  padding: 8px;
+  border-radius: 5px;
+  word-break: break-all;
+  font-family: monospace;
+}
+
+.hash-code {
+  color: #667eea !important;
+}
+
+.verification-badge {
+  padding: 15px;
+  background: #c8e6c9;
+  color: #2e7d32;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+

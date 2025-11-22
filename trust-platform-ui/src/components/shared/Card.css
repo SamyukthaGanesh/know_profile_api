@@ -1,0 +1,80 @@
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.card-badge {
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e0e0e0;
+  color: #666;
+}
+
+.card-badge.success {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.card-badge.warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.card-badge.danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.card-badge.info {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.card-header-action {
+  display: flex;
+  gap: 10px;
+}
+
+/* Dark theme card */
+.card.dark {
+  background: #0f0f1e;
+  border: 1px solid #333;
+  color: #fff;
+}
+
+.card.dark .card-title {
+  color: #fff;
+}
+
+.card.dark .card-header {
+  border-bottom-color: #333;
+}
+
