@@ -1,0 +1,127 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    TRUSTBANK AI - CLEAN PROJECT STRUCTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+📁 ROOT DIRECTORY:
+├── README.md                    Main documentation
+├── requirements.txt             Python dependencies
+├── run.sh                      Backend startup script
+├── START_ALL_COMPLETE.sh       All services startup script
+├── .gitignore                  Git ignore rules
+│
+├── 📂 app/                     FastAPI Backend (Port 8000)
+│   ├── main.py                 Main API endpoints
+│   ├── schemas.py              Pydantic models
+│   └── services/
+│       ├── consent_manager.py  Consent management with CSV
+│       ├── data.py             Data loading & feature engineering
+│       ├── explain.py          SHAP-like explanations
+│       ├── fairness.py         Fairness metrics
+│       ├── model.py            MiniLogReg ML model
+│       ├── recommend.py        Recommendations
+│       ├── reports.py          Reporting utilities
+│       └── visuals.py          Visualization helpers
+│
+├── 📂 data/                    Data Storage
+│   ├── users.csv               User profiles + consents (202 users)
+│   └── transactions.csv        Transaction history (38,582 records)
+│
+├── 📂 logs/                    Log Files (empty after cleanup)
+│
+└── 📂 trust-platform-ui/       React Frontend (Port 3000)
+    ├── package.json            Dependencies
+    ├── auth-server-simple.js   Auth Server (Port 3001)
+    ├── db.json                 Auth database
+    └── src/
+        ├── App.tsx             Main app with routing
+        │
+        ├── 📂 components/
+        │   ├── chatbot/
+        │   │   ├── ChatWidget.tsx      AI Chatbot widget
+        │   │   └── ChatWidget.css
+        │   ├── layout/
+        │   │   ├── UserLayout.tsx      User layout (3 nav items)
+        │   │   ├── AdminLayout.tsx     Admin layout (6 nav items)
+        │   │   └── *.css
+        │   └── shared/
+        │       ├── Badge.tsx           Reusable badge
+        │       ├── Button.tsx          Reusable button
+        │       ├── Card.tsx            Reusable card
+        │       ├── Modal.tsx           Reusable modal
+        │       ├── ProgressBar.tsx     Progress bar
+        │       └── ToggleSwitch.tsx    Toggle switch
+        │
+        ├── 📂 pages/
+        │   ├── admin/
+        │   │   ├── Overview.tsx           Dashboard overview (REAL DATA)
+        │   │   ├── ModelHealth.tsx        Model monitoring (REAL DATA)
+        │   │   ├── FairnessMonitor.tsx    Fairness metrics (REAL DATA)
+        │   │   ├── PolicyManager.tsx      GHCI policies (REAL DATA)
+        │   │   ├── AuditLedger.tsx        Blockchain audit (REAL DATA)
+        │   │   └── ApprovalsQueue.tsx     Human-in-loop approvals
+        │   ├── auth/
+        │   │   ├── LandingPage.tsx        Landing page
+        │   │   ├── LoginPage.tsx          Login
+        │   │   └── SignupPage.tsx         Signup
+        │   └── user/
+        │       ├── Dashboard.tsx          User dashboard (REAL DATA)
+        │       ├── KnowYourProfile.tsx    Profile with ML insights (REAL DATA)
+        │       └── ConsentWallet.tsx      Privacy settings (REAL DATA)
+        │
+        ├── 📂 services/
+        │   ├── api.ts              TrustBank API (port 8000)
+        │   └── ghciApi.ts          GHCI API (port 8001)
+        │
+        ├── 📂 types/
+        │   ├── api.ts              TypeScript types for APIs
+        │   └── ghci.ts             TypeScript types for GHCI
+        │
+        └── 📂 context/
+            └── AuthContext.tsx     Authentication context
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔌 EXTERNAL DEPENDENCIES:
+
+1. AI Governance Framework (GHCI)
+   Location: /Users/samganesh/Downloads/ai_governance_framework 2/
+   Port: 8001
+   Features: Policies, Audit Ledger, Fairness, Model Health
+
+2. AI Chatbot
+   Location: /Users/samganesh/Downloads/ai_governance_chatbot/
+   Port: 8002
+   Features: RAG-based regulatory Q&A, User data queries, SHAP reports
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 STARTUP:
+
+To start everything:
+  ./START_ALL_COMPLETE.sh
+
+This launches:
+  ✅ TrustBank Backend (8000)
+  ✅ AI Governance Framework (8001)
+  ✅ AI Chatbot (8002)
+  ✅ Auth Server (3001)
+  ✅ React Frontend (3000)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ WHAT'S WORKING (REAL DATA):
+  • User Dashboard - Trust scores, loan applications
+  • Know Your Profile - ML predictions, SHAP explanations
+  • Consent Management - Privacy controls with CSV storage
+  • Admin Overview - System metrics, alerts
+  • Model Health - ML model monitoring
+  • Fairness Monitor - Bias detection, demographic parity
+  • Policy Manager - GHCI regulatory policies
+  • Audit Ledger - Blockchain-style audit trail
+  • AI Chatbot - Regulatory Q&A with RAG + User data queries
+
+❌ WHAT'S NOT CONNECTED:
+  • Approvals Queue - Empty (no review endpoints in GHCI)
+  • Chatbot SHAP connection to live TrustBank model
+
+═══════════════════════════════════════════════════════════════════════════════

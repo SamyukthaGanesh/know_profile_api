@@ -52,7 +52,9 @@ interface Transaction {
   method: string;
 }
 
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// Force localhost:8000 for backend API
+const API_BASE = 'http://localhost:8000';
+console.log('🔧 KnowYourProfile using API_BASE:', API_BASE);
 
 export const KnowYourProfile: React.FC = () => {
   const [userId, setUserId] = useState('U1000');
@@ -63,31 +65,70 @@ export const KnowYourProfile: React.FC = () => {
   const [transactionTab, setTransactionTab] = useState<'table' | 'visual'>('visual');
 
   useEffect(() => {
-    if (userId) {
-      loadProfile();
-    }
+    // Always load profile on mount with default user
+    console.log('🔄 KnowYourProfile mounted, loading profile for:', userId);
+    loadProfile();
   }, []); // Load on mount
 
   const loadProfile = async () => {
+    console.log('🔄 Loading profile for user:', userId);
+    console.log('🔧 API_BASE:', API_BASE);
     setLoading(true);
     setError('');
     try {
       // Fetch profile
-      const profileRes = await fetch(`${API_BASE}/generate_profile/${userId}`);
-      if (!profileRes.ok) throw new Error('Failed to fetch profile');
+      const profileUrl = `${API_BASE}/generate_profile/${userId}`;
+      console.log('📡 Fetching profile from:', profileUrl);
+      
+      const profileRes = await fetch(profileUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        mode: 'cors',
+      });
+      
+      console.log('📊 Profile response status:', profileRes.status, profileRes.statusText);
+      
+      if (!profileRes.ok) {
+        console.error('❌ Profile fetch failed:', profileRes.status, profileRes.statusText);
+        throw new Error(`Failed to fetch profile: ${profileRes.status} ${profileRes.statusText}`);
+      }
+      
       const profileData = await profileRes.json();
+      console.log('✅ Profile loaded:', profileData);
       setProfile(profileData);
 
       // Fetch transactions
-      const txRes = await fetch(`${API_BASE}/get_transactions/${userId}?limit=10`);
-      if (!txRes.ok) throw new Error('Failed to fetch transactions');
+      const txUrl = `${API_BASE}/get_transactions/${userId}?limit=10`;
+      console.log('📡 Fetching transactions from:', txUrl);
+      
+      const txRes = await fetch(txUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        mode: 'cors',
+      });
+      
+      console.log('📊 Transactions response status:', txRes.status, txRes.statusText);
+      
+      if (!txRes.ok) {
+        console.error('❌ Transactions fetch failed:', txRes.status, txRes.statusText);
+        throw new Error(`Failed to fetch transactions: ${txRes.status}`);
+      }
+      
       const txData = await txRes.json();
+      console.log('✅ Transactions loaded:', txData.transactions?.length || 0, 'transactions');
       setTransactions(txData.transactions || []);
     } catch (err: any) {
-      setError(err.message || 'Failed to load profile');
-      console.error('Profile load error:', err);
+      const errorMsg = err.message || 'Failed to load profile';
+      console.error('❌ Profile load error:', errorMsg);
+      console.error('❌ Full error:', err);
+      setError(`${errorMsg}\n\nBackend URL: ${API_BASE}\nMake sure backend is running on port 8000`);
     } finally {
       setLoading(false);
+      console.log('✅ Profile loading complete');
     }
   };
 
@@ -119,6 +160,7 @@ export const KnowYourProfile: React.FC = () => {
   };
 
   if (loading && !profile) {
+    console.log('📊 Showing loading screen...');
     return (
       <div className="profile-loading">
         <div className="loader"></div>
@@ -127,6 +169,33 @@ export const KnowYourProfile: React.FC = () => {
     );
   }
 
+  if (error && !profile) {
+    console.log('❌ Showing error screen:', error);
+    return (
+      <div className="profile-error" style={{ padding: '40px', textAlign: 'center' }}>
+        <h2 style={{ color: '#ef4444' }}>⚠️ Error Loading Profile</h2>
+        <p style={{ marginTop: '16px', fontSize: '16px' }}>{error}</p>
+        <Button variant="primary" onClick={loadProfile} style={{ marginTop: '24px' }}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    console.log('⚠️ No profile data, showing empty state');
+    return (
+      <div className="profile-empty" style={{ padding: '40px', textAlign: 'center' }}>
+        <h2>No Profile Data</h2>
+        <p style={{ marginTop: '16px' }}>Click "Load Profile" to fetch your data.</p>
+        <Button variant="primary" onClick={loadProfile} style={{ marginTop: '24px' }}>
+          Load Profile
+        </Button>
+      </div>
+    );
+  }
+
+  console.log('✅ Rendering profile for:', profile.user_id);
   return (
     <div className="know-your-profile">
       {/* Bank-style Header */}

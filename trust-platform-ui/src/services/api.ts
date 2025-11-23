@@ -139,10 +139,21 @@ const mockExplanation: types.ExplanationResponse = {
 export const api = {
   // User Dashboard APIs
   async getUserDashboard(): Promise<types.UserDashboardResponse> {
-    // In production, replace with actual API call
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(mockUserDashboard), 500);
-    });
+    // Get actual user ID from auth context (fallback to U1000 for demo)
+    const userId = 'U1000'; // TODO: Get from auth context
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/dashboard/${userId}`);
+      if (!response.ok) throw new Error('Failed to fetch dashboard');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching user dashboard:', error);
+      // Fallback to mock data
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(mockUserDashboard), 500);
+      });
+    }
   },
 
   async getExplanation(applicationId: string, literacyLevel: string = 'beginner'): Promise<types.ExplanationResponse> {
@@ -152,88 +163,76 @@ export const api = {
   },
 
   async getConsentStatus(): Promise<{ consents: types.ConsentItem[]; statistics: any }> {
-    const consents: types.ConsentItem[] = [
-      {
-        consentId: 'C-001',
-        serviceName: 'Fraud Detection AI',
-        serviceDescription: 'Analyze transactions for suspicious activity',
-        category: 'fraud_detection',
-        status: 'granted',
-        grantedAt: new Date(Date.now() - 30 * 86400000).toISOString(),
-        dataUsageCount: 245,
-        lastUsed: new Date(Date.now() - 3600000).toISOString(),
-      },
-      {
-        consentId: 'C-002',
-        serviceName: 'Loan Approval Model',
-        serviceDescription: 'Use my data for credit decisions',
-        category: 'loan_approval',
-        status: 'granted',
-        grantedAt: new Date(Date.now() - 60 * 86400000).toISOString(),
-        dataUsageCount: 12,
-        lastUsed: new Date(Date.now() - 86400000).toISOString(),
-      },
-      {
-        consentId: 'C-003',
-        serviceName: 'Personalization Engine',
-        serviceDescription: 'Customize offers based on my preferences',
-        category: 'personalization',
-        status: 'granted',
-        grantedAt: new Date(Date.now() - 45 * 86400000).toISOString(),
-        dataUsageCount: 89,
-        lastUsed: new Date(Date.now() - 7200000).toISOString(),
-      },
-      {
-        consentId: 'C-004',
-        serviceName: 'Marketing Analytics',
-        serviceDescription: 'Include my anonymized data in marketing analysis',
-        category: 'marketing',
-        status: 'revoked',
-        grantedAt: new Date(Date.now() - 90 * 86400000).toISOString(),
-        revokedAt: new Date(Date.now() - 15 * 86400000).toISOString(),
-        dataUsageCount: 34,
-      },
-      {
-        consentId: 'C-005',
-        serviceName: 'Model Training',
-        serviceDescription: 'Use my data to improve AI models',
-        category: 'model_training',
-        status: 'revoked',
-        dataUsageCount: 0,
-      },
-    ];
-
-    return new Promise((resolve) => {
-      setTimeout(() => resolve({
-        consents,
-        statistics: {
-          totalActive: consents.filter(c => c.status === 'granted').length,
-          totalRevoked: consents.filter(c => c.status === 'revoked').length,
-          totalDataUsage: consents.reduce((sum, c) => sum + c.dataUsageCount, 0),
+    // Get actual user ID from auth context (fallback to U1000 for demo)
+    const userId = 'U1000'; // TODO: Get from auth context
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/${userId}/consents`);
+      if (!response.ok) throw new Error('Failed to fetch consents');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching consents:', error);
+      // Fallback to mock data
+      const consents: types.ConsentItem[] = [
+        {
+          consentId: 'C-001',
+          serviceName: 'Fraud Detection AI',
+          serviceDescription: 'Analyze transactions for suspicious activity',
+          category: 'fraud_detection',
+          status: 'granted',
+          grantedAt: new Date(Date.now() - 30 * 86400000).toISOString(),
+          dataUsageCount: 245,
+          lastUsed: new Date(Date.now() - 3600000).toISOString(),
         },
-      }), 500);
-    });
+      ];
+
+      return new Promise((resolve) => {
+        setTimeout(() => resolve({
+          consents,
+          statistics: {
+            totalActive: consents.filter(c => c.status === 'granted').length,
+            totalRevoked: consents.filter(c => c.status === 'revoked').length,
+            totalDataUsage: consents.reduce((sum, c) => sum + c.dataUsageCount, 0),
+          },
+        }), 500);
+      });
+    }
   },
 
   async updateConsent(consentId: string, action: 'grant' | 'revoke'): Promise<{ receipt: types.ConsentReceipt }> {
-    const receipt: types.ConsentReceipt = {
-      receiptId: `CR-${Date.now()}`,
-      consentId,
-      serviceName: 'Service',
-      action: action === 'grant' ? 'granted' : 'revoked',
-      timestamp: new Date().toISOString(),
-      hash: `0x${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-      blockchainStatus: 'verified',
-      blockNumber: Math.floor(Math.random() * 100000),
-      cryptographicHash: `0x${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-      blockchainVerified: true,
-      previousHash: `0x${Math.random().toString(36).substring(2, 15)}`,
-      signature: `0x${Math.random().toString(36).substring(2, 15)}`,
-    };
+    // Get actual user ID from auth context (fallback to U1000 for demo)
+    const userId = 'U1000'; // TODO: Get from auth context
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/${userId}/consents/${consentId}?action=${action}`, {
+        method: 'POST'
+      });
+      if (!response.ok) throw new Error('Failed to update consent');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error updating consent:', error);
+      // Fallback to mock receipt
+      const receipt: types.ConsentReceipt = {
+        receiptId: `CR-${Date.now()}`,
+        consentId,
+        serviceName: 'Service',
+        action: action === 'grant' ? 'granted' : 'revoked',
+        timestamp: new Date().toISOString(),
+        hash: `0x${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
+        blockchainStatus: 'verified',
+        blockNumber: Math.floor(Math.random() * 100000),
+        cryptographicHash: `0x${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
+        blockchainVerified: true,
+        previousHash: `0x${Math.random().toString(36).substring(2, 15)}`,
+        signature: `0x${Math.random().toString(36).substring(2, 15)}`,
+      };
 
-    return new Promise((resolve) => {
-      setTimeout(() => resolve({ receipt }), 500);
-    });
+      return new Promise((resolve) => {
+        setTimeout(() => resolve({ receipt }), 500);
+      });
+    }
   },
 
   async getFairnessReport(): Promise<types.UserFairnessReport> {

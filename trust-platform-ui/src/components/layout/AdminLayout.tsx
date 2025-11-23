@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import AdminRegulationChat from '../chatbot/AdminRegulationChat';
 import './AdminLayout.css';
 
 interface AdminLayoutProps {
@@ -14,27 +15,21 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const navSections = [
     {
-      title: 'AI GOVERNANCE',
+      title: 'DASHBOARD',
       items: [
         { path: '/admin/overview', label: 'Overview', icon: '📊' },
         { path: '/admin/models', label: 'Model Health', icon: '🏥' },
         { path: '/admin/fairness', label: 'Fairness Monitor', icon: '⚖️' },
-        { path: '/admin/approvals', label: 'Approvals Queue', icon: '✅' },
       ],
     },
     {
-      title: 'COMPLIANCE',
+      title: 'GOVERNANCE',
       items: [
-        { path: '/admin/regulatory', label: 'Regulatory Dashboard', icon: '📋' },
-        { path: '/admin/audit', label: 'Audit & Ledgers', icon: '🔍' },
-      ],
-    },
-    {
-      title: 'OPERATIONS',
-      items: [
-        { path: '/admin/alerts', label: 'Alert Center', icon: '🚨' },
-        { path: '/admin/human-loop', label: 'Human-in-Loop', icon: '👤' },
-        { path: '/admin/explainability', label: 'Explainability Lab', icon: '🧠' },
+        { path: '/admin/policies', label: 'Policy Manager', icon: '📜' },
+        { path: '/admin/audit-ledger', label: 'Audit Ledger', icon: '🔐' },
+        { path: '/admin/blockchain', label: 'Blockchain Explorer', icon: '🔗' },
+      { path: '/admin/blockchain-graph', label: 'Blockchain Graph', icon: '📊' },
+        { path: '/admin/data', label: 'Data Management', icon: '🗄️' },
       ],
     },
   ];
@@ -85,6 +80,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </aside>
 
       <main className="admin-main">{children}</main>
+      
+      {/* Admin Regulation Chat Widget */}
+      <AdminRegulationChat userId={user?.userId || 'admin'} />
     </div>
   );
 };

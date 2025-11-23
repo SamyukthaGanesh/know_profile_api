@@ -20,36 +20,49 @@ export const ConsentWallet: React.FC = () => {
   }, []);
 
   const loadConsents = async () => {
+    console.log('🔄 Loading consents...');
     try {
       const data = await api.getConsentStatus();
+      console.log('✅ Consents loaded:', data.consents.length, 'items');
+      console.log('📋 Consent data:', data.consents);
       setConsents(data.consents);
     } catch (error) {
-      console.error('Failed to load consents:', error);
+      console.error('❌ Failed to load consents:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleToggleConsent = async (consentId: string, currentStatus: string) => {
-    const newAction = currentStatus === 'granted' ? 'revoke' : 'grant';
+  const handleToggleConsent = async (consentId: string, newCheckedState: boolean) => {
+    const newAction = newCheckedState ? 'grant' : 'revoke';
+    const newStatus = newCheckedState ? 'granted' : 'revoked';
     
     try {
       const response = await api.updateConsent(consentId, newAction);
       
-      // Update local state
-      setConsents(consents.map(c => 
+      // Update local state for THIS specific consent only
+      setConsents(prevConsents => prevConsents.map(c => 
         c.consentId === consentId 
-          ? { ...c, status: newAction === 'grant' ? 'granted' : 'revoked' as any }
+          ? { 
+              ...c, 
+              status: newStatus as 'granted' | 'revoked',
+              revokedAt: !newCheckedState ? new Date().toISOString() : undefined,
+              dataUsageCount: !newCheckedState ? 0 : c.dataUsageCount
+            }
           : c
       ));
       
       // Add receipt
-      setReceipts([response.receipt, ...receipts]);
+      if (response.receipt) {
+        setReceipts([response.receipt, ...receipts]);
+      }
       
       // Show notification
-      alert(`Consent ${newAction === 'grant' ? 'granted' : 'revoked'} successfully!`);
+      console.log(`✅ Consent ${consentId} ${newAction}ed successfully!`);
     } catch (error) {
       console.error('Failed to update consent:', error);
+      // Reload consents to get correct state
+      loadConsents();
     }
   };
 
@@ -65,17 +78,31 @@ export const ConsentWallet: React.FC = () => {
   };
 
   if (loading) {
+    console.log('📊 Showing loading screen for consent wallet...');
     return <div className="loading">Loading consent wallet...</div>;
   }
 
+  console.log('✅ Rendering consent wallet with', consents.length, 'consents');
   const activeConsents = consents.filter(c => c.status === 'granted').length;
+
+  if (consents.length === 0) {
+    console.log('⚠️ No consents to display!');
+    return (
+      <div className="consent-wallet-page">
+        <Card>
+          <CardHeader title="🔐 Consent Provenance Wallet" />
+          <p style={{ padding: '20px', textAlign: 'center' }}>No consent data available.</p>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="consent-wallet-page">
       <Card>
         <CardHeader 
           title="🔐 Consent Provenance Wallet"
-          badge={<Badge variant="success">{activeConsents} Active Consents</Badge>}
+          badge={<Badge variant="success">{activeConsents}/{consents.length} Active Consents</Badge>}
         />
 
         <p className="consent-description">
@@ -101,7 +128,7 @@ export const ConsentWallet: React.FC = () => {
               </div>
               <ToggleSwitch
                 checked={consent.status === 'granted'}
-                onChange={() => handleToggleConsent(consent.consentId, consent.status)}
+                onChange={(newCheckedState) => handleToggleConsent(consent.consentId, newCheckedState)}
               />
             </div>
           ))}

@@ -5,7 +5,10 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 
-from .schemas import ProfileSummary, ChartLinks, FairnessSnapshot, RewardsSummary, BiasReductionReport, ConsentState
+from .schemas import (
+    ProfileSummary, ChartLinks, FairnessSnapshot, RewardsSummary, 
+    BiasReductionReport, ConsentState, UserDashboardData, ConsentItem, ConsentReceipt
+)
 from .services import data as data_svc
 from .services import model as model_svc
 from .services import explain as xai_svc
@@ -14,14 +17,16 @@ from .services import consent as consent_svc
 from .services import reports as reports_svc
 from .services import recommend as rec_svc
 from .services import visuals as vis_svc
+from .services.consent_manager import CONSENT_MANAGER
+from datetime import datetime
 
 app = FastAPI(title="TrustLayer — Know Your Profile API", version="0.1.0")
 
-# Enable CORS for React app
+# Enable CORS for React app - Allow all origins for demo
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],
-    allow_credentials=True,
+    allow_origins=["*"],  # Allow all origins for demo
+    allow_credentials=False,  # Must be False when allow_origins is "*"
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -200,3 +205,109 @@ def rewards(user_id: str):
         raise HTTPException(404, "User not found.")
     r = rec_svc.rewards_for_user(feats.loc[user_id])
     return r
+
+# ============================================================
+# NEW: User Dashboard & Consent Management APIs
+# ============================================================
+
+@app.get("/user/dashboard/{user_id}")
+def get_user_dashboard(user_id: str):
+    """Get comprehensive dashboard data for a user"""
+    if not STATE["bootstrapped"]:
+        raise HTTPException(400, "Call /bootstrap first.")
+    
+    # Get user profile data
+    features = data_svc.DATA.features
+    if user_id not in features.index:
+        raise HTTPException(404, "User not found.")
+    
+    row = features.loc[user_id]
+    X = features.drop(columns=["loan_eligible_label"], errors="ignore")
+    proba = float(model_svc.MODEL.predict_proba(X.loc[[user_id]])[0])
+    
+    # Calculate trust score components
+    trust_components = {
+        'accuracy': int(85 + (proba * 10)),  # Based on model confidence
+        'fairness': 94,  # High fairness in demo
+        'transparency': 88,
+        'privacy': 90,
+        'explainability': int(75 + (proba * 15)),
+        'compliance': 95
+    }
+    
+    # Generate user name from user_id (e.g., U1000 -> "User 1000")
+    user_number = user_id.replace("U", "")
+    names = ["Priya", "Raj", "Ananya", "Arjun", "Sneha", "Vikram", "Ishita", "Rohan"]
+    name_idx = int(user_number) % len(names)
+    user_name = f"{names[name_idx]} {names[(name_idx + 3) % len(names)]}"
+    
+    # Simulate active loan application (if credit score is decent)
+    active_loan = None
+    if row["credit_score"] > 600:
+        active_loan = {
+            'applicationId': f'APP-2024-{user_number}',
+            'amount': int(row["annual_income_inr"] * 2.5),
+            'currency': 'INR',
+            'status': 'under_review' if proba < 0.7 else 'approved',
+            'submittedAt': datetime.now().isoformat(),
+            'confidence': round(proba, 2),
+            'riskLevel': 'low' if proba > 0.8 else ('medium' if proba > 0.5 else 'high')
+        }
+    
+    # Get consent stats
+    consent_stats = CONSENT_MANAGER.get_consent_statistics(user_id)
+    
+    return {
+        'user': {
+            'userId': user_id,
+            'name': user_name,
+            'lastLogin': datetime.now().isoformat(),
+            'profilePictureUrl': None
+        },
+        'trustScore': {
+            'overall': int(sum(trust_components.values()) / len(trust_components)),
+            'components': trust_components,
+            'lastUpdated': datetime.now().isoformat(),
+            'trend': 'up' if proba > 0.6 else 'stable'
+        },
+        'activeLoanApplication': active_loan,
+        'quickStats': {
+            'activeConsents': consent_stats['totalActive'],
+            'fairnessRating': 94,
+            'pendingActions': 2 if active_loan and active_loan['status'] == 'under_review' else 0
+        }
+    }
+
+@app.get("/user/{user_id}/consents")
+def get_user_consents(user_id: str):
+    """Get all consents for a user"""
+    if not STATE["bootstrapped"]:
+        raise HTTPException(400, "Call /bootstrap first.")
+    
+    # Verify user exists
+    features = data_svc.DATA.features
+    if user_id not in features.index:
+        raise HTTPException(404, "User not found.")
+    
+    consents = CONSENT_MANAGER.get_user_consents(user_id)
+    statistics = CONSENT_MANAGER.get_consent_statistics(user_id)
+    
+    return {
+        'consents': consents,
+        'statistics': statistics
+    }
+
+@app.post("/user/{user_id}/consents/{consent_id}")
+def update_user_consent(user_id: str, consent_id: str, action: str):
+    """Grant or revoke a consent"""
+    if action not in ['grant', 'revoke']:
+        raise HTTPException(400, "Action must be 'grant' or 'revoke'")
+    
+    if not STATE["bootstrapped"]:
+        raise HTTPException(400, "Call /bootstrap first.")
+    
+    try:
+        receipt = CONSENT_MANAGER.update_consent(consent_id, action)
+        return {'receipt': receipt}
+    except ValueError as e:
+        raise HTTPException(404, str(e))

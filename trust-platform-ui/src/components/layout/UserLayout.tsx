@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { AIChatbot } from '../chatbot/AIChatbot';
+import ChatWidget from '../chatbot/ChatWidget';
 import './UserLayout.css';
 
 interface UserLayoutProps {
@@ -15,10 +15,9 @@ export const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   const navItems = [
-    { path: '/user/dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/user/profile', label: 'Your Profile', icon: '👤' },
-    { path: '/user/explanations', label: 'AI Explanations', icon: '🧠' },
-    { path: '/user/consent', label: 'Consent Wallet', icon: '🔐' },
+    { path: '/user/profile', label: 'Know Your Profile', icon: '👤' },
+    { path: '/user/global-explanations', label: 'AI Explanations', icon: '🧠' },
+    { path: '/user/consent', label: 'Privacy Settings', icon: '🔐' },
   ];
 
   const handleLogout = () => {
@@ -63,13 +62,6 @@ export const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
                   <div className="dropdown-user-id">ID: {user?.userId}</div>
                 </div>
                 <div className="dropdown-divider"></div>
-                <button className="dropdown-item" onClick={() => navigate('/user/profile')}>
-                  <span>👤</span> Your Profile
-                </button>
-                <button className="dropdown-item" onClick={() => navigate('/user/consent')}>
-                  <span>🔐</span> Privacy Settings
-                </button>
-                <div className="dropdown-divider"></div>
                 <button className="dropdown-item logout" onClick={handleLogout}>
                   <span>🚪</span> Logout
                 </button>
@@ -81,7 +73,7 @@ export const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
       <main className="user-content">{children}</main>
       
       {/* AI Chatbot Widget */}
-      <AIChatbot />
+      <ChatWidget userId={user?.userId || '1'} />
     </div>
   );
 };

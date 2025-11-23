@@ -1,0 +1,21 @@
+/* Admin Regulation Chat Additional Styles */
+
+.admin-chat-button {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  bottom: 104px !important;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.admin-chat-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+}
+
+.admin-chat-window {
+  bottom: 178px !important;
+}
+
+.admin-chat-header {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%) !important;
+}
+

@@ -10,8 +10,7 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { SignupPage } from './pages/auth/SignupPage';
 
 // User Pages
-import { UserDashboard } from './pages/user/Dashboard';
-import { Explanations } from './pages/user/Explanations';
+import { GlobalExplanations } from './pages/user/GlobalExplanations';
 import { ConsentWallet } from './pages/user/ConsentWallet';
 import { KnowYourProfile } from './pages/user/KnowYourProfile';
 
@@ -20,6 +19,11 @@ import { AdminOverview } from './pages/admin/Overview';
 import { ModelHealth } from './pages/admin/ModelHealth';
 import { FairnessMonitor } from './pages/admin/FairnessMonitor';
 import { ApprovalsQueue } from './pages/admin/ApprovalsQueue';
+import { PolicyManager } from './pages/admin/PolicyManager';
+import { AuditLedger } from './pages/admin/AuditLedger';
+import { BlockchainExplorer } from './pages/admin/BlockchainExplorer';
+import { BlockchainGraph } from './pages/admin/BlockchainGraph';
+import { DataManagement } from './pages/admin/DataManagement';
 
 import './App.css';
 
@@ -44,7 +48,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
   }
 
   if (adminOnly && user.role !== 'admin') {
-    return <Navigate to="/user/dashboard" replace />;
+    return <Navigate to="/user/profile" replace />;
   }
 
   return <>{children}</>;
@@ -64,7 +68,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (user) {
-    return <Navigate to={user.role === 'admin' ? '/admin/overview' : '/user/dashboard'} replace />;
+    return <Navigate to={user.role === 'admin' ? '/admin/overview' : '/user/profile'} replace />;
   }
 
   return <>{children}</>;
@@ -87,13 +91,13 @@ const App: React.FC = () => {
               <ProtectedRoute>
                 <UserLayout>
                   <Routes>
-                    <Route path="dashboard" element={<UserDashboard />} />
+                    <Route index element={<Navigate to="profile" replace />} />
                     <Route path="profile" element={<KnowYourProfile />} />
-                    <Route path="explanations" element={<Explanations />} />
+                    <Route path="global-explanations" element={<GlobalExplanations />} />
                     <Route path="consent" element={<ConsentWallet />} />
                     <Route path="fairness" element={<PlaceholderPage title="Fairness Monitor" />} />
                     <Route path="audit" element={<PlaceholderPage title="Audit Trail" />} />
-                    <Route path="*" element={<Navigate to="/user/dashboard" replace />} />
+                    <Route path="*" element={<Navigate to="/user/profile" replace />} />
                   </Routes>
                 </UserLayout>
               </ProtectedRoute>
@@ -111,8 +115,12 @@ const App: React.FC = () => {
                     <Route path="models" element={<ModelHealth />} />
                     <Route path="fairness" element={<FairnessMonitor />} />
                     <Route path="approvals" element={<ApprovalsQueue />} />
-                    <Route path="regulatory" element={<PlaceholderPage title="Regulatory Dashboard" dark />} />
-                    <Route path="audit" element={<PlaceholderPage title="Audit & Ledgers" dark />} />
+                    <Route path="policies" element={<PolicyManager />} />
+                    <Route path="audit-ledger" element={<AuditLedger />} />
+                    <Route path="blockchain" element={<BlockchainExplorer />} />
+                    <Route path="blockchain-graph" element={<BlockchainGraph />} />
+                    <Route path="data" element={<DataManagement />} />
+                    <Route path="audit" element={<AuditLedger />} />
                     <Route path="alerts" element={<PlaceholderPage title="Alert Center" dark />} />
                     <Route path="human-loop" element={<PlaceholderPage title="Human-in-Loop Cases" dark />} />
                     <Route path="explainability" element={<PlaceholderPage title="Explainability Lab" dark />} />
