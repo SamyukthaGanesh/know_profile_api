@@ -1,0 +1,273 @@
+{
+  "policies": [
+    {
+      "policy_id": "BASEL_III_CREDIT_001",
+      "name": "Minimum Credit Score for Large Loans",
+      "regulation_source": "Basel III",
+      "policy_type": "credit_risk",
+      "description": "Credit score must be >= 650 for loans over $50,000",
+      "condition": {
+        "logical_operator": "AND",
+        "sub_conditions": [
+          {
+            "feature": "AMT_CREDIT",
+            "operator": ">",
+            "value": 50000
+          },
+          {
+            "feature": "EXT_SOURCE_2",
+            "operator": "<",
+            "value": 0.5
+          }
+        ]
+      },
+      "action": "flag_for_review",
+      "version": "1.0",
+      "effective_date": "2024-01-01T00:00:00",
+      "expiry_date": null,
+      "jurisdiction": "US",
+      "priority": 10,
+      "enabled": true,
+      "rationale": "Ensures adequate creditworthiness for large loans to minimize default risk",
+      "references": [
+        "Basel III Framework - Section 2.3.1",
+        "Risk Management Guidelines 2024"
+      ],
+      "tags": [
+        "credit_risk",
+        "basel",
+        "loan_approval",
+        "large_loans"
+      ],
+      "created_at": "2024-01-01T00:00:00",
+      "created_by": "compliance_team",
+      "updated_at": null,
+      "updated_by": null
+    },
+    {
+      "policy_id": "FAIR_LENDING_AGE_001",
+      "name": "Age-Based Lending Protection",
+      "regulation_source": "Equal Credit Opportunity Act (ECOA)",
+      "policy_type": "anti_discrimination",
+      "description": "Cannot deny loans solely based on age for applicants under 18 or over 70",
+      "condition": {
+        "logical_operator": "OR",
+        "sub_conditions": [
+          {
+            "feature": "AGE",
+            "operator": "<",
+            "value": 18
+          },
+          {
+            "feature": "AGE",
+            "operator": ">",
+            "value": 70
+          }
+        ]
+      },
+      "action": "require_explanation",
+      "version": "1.0",
+      "effective_date": "2024-01-01T00:00:00",
+      "expiry_date": null,
+      "jurisdiction": "US",
+      "priority": 15,
+      "enabled": true,
+      "rationale": "Prevents age discrimination in lending decisions as mandated by ECOA",
+      "references": [
+        "ECOA - 15 U.S.C. \u00a7 1691",
+        "Regulation B - 12 CFR Part 1002"
+      ],
+      "tags": [
+        "fairness",
+        "anti_discrimination",
+        "age",
+        "ecoa"
+      ],
+      "created_at": "2024-01-01T00:00:00",
+      "created_by": "legal_team",
+      "updated_at": null,
+      "updated_by": null
+    },
+    {
+      "policy_id": "GDPR_DATA_001",
+      "name": "Consent Required for Data Processing",
+      "regulation_source": "General Data Protection Regulation (GDPR)",
+      "policy_type": "data_protection",
+      "description": "Explicit consent required before processing personal data",
+      "condition": {
+        "feature": "consent_given",
+        "operator": "==",
+        "value": false
+      },
+      "action": "block",
+      "version": "1.0",
+      "effective_date": "2024-01-01T00:00:00",
+      "expiry_date": null,
+      "jurisdiction": "EU",
+      "priority": 20,
+      "enabled": true,
+      "rationale": "GDPR Article 6 requires lawful basis for processing personal data",
+      "references": [
+        "GDPR Article 6 - Lawfulness of processing",
+        "GDPR Article 7 - Conditions for consent"
+      ],
+      "tags": [
+        "gdpr",
+        "privacy",
+        "consent",
+        "data_protection"
+      ],
+      "created_at": "2024-01-01T00:00:00",
+      "created_by": "privacy_officer",
+      "updated_at": null,
+      "updated_by": null
+    },
+    {
+      "policy_id": "FAIR_LENDING_GENDER_001",
+      "name": "Gender-Based Lending Protection",
+      "regulation_source": "Equal Credit Opportunity Act (ECOA)",
+      "policy_type": "anti_discrimination",
+      "description": "Cannot use invalid or missing gender codes in lending decisions",
+      "condition": {
+        "feature": "CODE_GENDER",
+        "operator": "not_in",
+        "value": [
+          "M",
+          "F",
+          "XNA"
+        ]
+      },
+      "action": "require_explanation",
+      "version": "1.0",
+      "effective_date": "2024-01-01T00:00:00",
+      "expiry_date": null,
+      "jurisdiction": "US",
+      "priority": 15,
+      "enabled": true,
+      "rationale": "Prevents gender discrimination as mandated by ECOA",
+      "references": [
+        "ECOA - 15 U.S.C. \u00a7 1691",
+        "Regulation B - 12 CFR Part 1002"
+      ],
+      "tags": [
+        "fairness",
+        "anti_discrimination",
+        "gender",
+        "ecoa"
+      ],
+      "created_at": "2024-01-01T00:00:00",
+      "created_by": "legal_team",
+      "updated_at": null,
+      "updated_by": null
+    },
+    {
+      "policy_id": "BASEL_III_INCOME_001",
+      "name": "Minimum Income Requirement",
+      "regulation_source": "Basel III",
+      "policy_type": "credit_risk",
+      "description": "Minimum annual income of $25,000 required for unsecured loans",
+      "condition": {
+        "logical_operator": "AND",
+        "sub_conditions": [
+          {
+            "feature": "AMT_INCOME_TOTAL",
+            "operator": "<",
+            "value": 25000
+          },
+          {
+            "feature": "FLAG_OWN_REALTY",
+            "operator": "==",
+            "value": 0
+          }
+        ]
+      },
+      "action": "deny",
+      "version": "1.0",
+      "effective_date": "2024-01-01T00:00:00",
+      "expiry_date": null,
+      "jurisdiction": "US",
+      "priority": 8,
+      "enabled": true,
+      "rationale": "Ensures borrower has sufficient income for loan repayment",
+      "references": [
+        "Basel III Framework - Pillar 1",
+        "Credit Risk Standards 2024"
+      ],
+      "tags": [
+        "credit_risk",
+        "income",
+        "basel"
+      ],
+      "created_at": "2024-01-01T00:00:00",
+      "created_by": "risk_team",
+      "updated_at": null,
+      "updated_by": null
+    },
+    {
+      "policy_id": "TRANSPARENCY_001",
+      "name": "Model Explanation Required for Denials",
+      "regulation_source": "Fair Credit Reporting Act (FCRA)",
+      "policy_type": "transparency",
+      "description": "Must provide adverse action notice with specific reasons for credit denials",
+      "condition": {
+        "feature": "TARGET",
+        "operator": "==",
+        "value": 1
+      },
+      "action": "require_explanation",
+      "version": "1.0",
+      "effective_date": "2024-01-01T00:00:00",
+      "expiry_date": null,
+      "jurisdiction": "US",
+      "priority": 12,
+      "enabled": true,
+      "rationale": "FCRA Section 615 requires adverse action notices with specific reasons",
+      "references": [
+        "FCRA - 15 U.S.C. \u00a7 1681m",
+        "Regulation V - 12 CFR Part 1022"
+      ],
+      "tags": [
+        "transparency",
+        "fcra",
+        "adverse_action",
+        "explainability"
+      ],
+      "created_at": "2024-01-01T00:00:00",
+      "created_by": "compliance_team",
+      "updated_at": null,
+      "updated_by": null
+    },
+    {
+      "policy_id": "CUSTOM_BANK_001",
+      "name": "High-Value Loan Approval Requirement",
+      "regulation_source": "Internal Bank Policy",
+      "policy_type": "credit_risk",
+      "description": "Loans over $100,000 require senior manager approval",
+      "condition": {
+        "feature": "AMT_CREDIT",
+        "operator": ">",
+        "value": 100000
+      },
+      "action": "flag_for_review",
+      "version": "1.0",
+      "effective_date": null,
+      "expiry_date": null,
+      "jurisdiction": null,
+      "priority": 5,
+      "enabled": true,
+      "rationale": "Risk management for high-value loans",
+      "references": null,
+      "tags": [
+        "internal",
+        "high_value",
+        "approval_required"
+      ],
+      "created_at": "2025-11-22T21:30:11.651351",
+      "created_by": "compliance_demo",
+      "updated_at": null,
+      "updated_by": null
+    }
+  ],
+  "total_count": 7,
+  "last_updated": "2025-11-22T21:30:11.651408"
+}
