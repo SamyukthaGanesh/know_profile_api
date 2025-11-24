@@ -84,3 +84,15 @@ chatbot/.DS_Store
 # Data files (if large)
 *.parquet
 *.feather
+
+# Large data files (>100MB for GitHub)
+backend/examples/*.csv
+backend/examples/application_train.csv
+backend/examples/application_test.csv
+backend/data/*.csv
+chatbot/data/*.csv
+
+# Any large files
+*.csv.gz
+*.parquet
+*.feather
